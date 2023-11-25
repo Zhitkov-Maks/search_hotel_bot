@@ -19,3 +19,10 @@ class BestDealState(HotelInfoState):
     price_min = State()
     price_max = State()
     distance = State()
+
+
+class HistoryState(StatesGroup):
+    """Класс состояний для команды /history"""
+
+    start = State()
+    count = State()
