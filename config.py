@@ -1,14 +1,12 @@
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from decouple import config
 
-BOT_TOKEN = config('TOKEN')
+BOT_TOKEN = config("TOKEN")
 RAPIDAPI_KEY = config("RAPIDAPI_KEY")
 
-text = """Список доступных команд: 
-/lowprice - Вывод самых дешёвых отелей.
-/highprice - Вывод самых дорогих отелей.
-/bestdeal - Вывод отелей, наиболее подходящих по цене и расположению от центра.
-/history - Вывод истории поиска отелей."
-/money - В какой валюте будем искать отели?"""
+text = """Список доступных команд:
+/start - Приветствие.
+/help - Показать меню."""
 
 list_base_command = [
     "/bestdeal",
@@ -16,6 +14,18 @@ list_base_command = [
     "/start",
     "/lowprice",
     "/highprice",
-    "/money",
-    "/history"
+    "/history",
 ]
+
+menu_bot = [
+    [
+        InlineKeyboardButton(text="Самые лучшие отели.", callback_data="/highprice"),
+        InlineKeyboardButton(text="Самые дешёвые отели", callback_data="/lowprice"),
+    ],
+    [
+        InlineKeyboardButton(text="По вашим данным", callback_data="/bestdeal"),
+        InlineKeyboardButton(text="История ваших запросов", callback_data="history"),
+    ],
+]
+
+menu = InlineKeyboardMarkup(inline_keyboard=menu_bot)

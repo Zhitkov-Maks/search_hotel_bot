@@ -1,4 +1,3 @@
-import asyncio
 import json
 from typing import Any
 
@@ -33,8 +32,3 @@ async def get_city_request(city: str) -> Any:
 
     except PermissionError:
         return False
-
-
-if __name__ == "__main__":
-    resp = asyncio.run(get_city_request("Лондон"))
-    print(resp)

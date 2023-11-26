@@ -3,12 +3,16 @@ import asyncio
 from botrequest.address_request import post_address_request
 from botrequest.detail_request import post_detail_request
 from botrequest.hotels_request import post_hotels_request
+from database import Request
+from database.settings import get_async_session
 
 
 async def get_sort(command: str) -> str:
     sort = "PRICE_LOW_TO_HIGH"
+
     if command == "/highprice":
         sort = "PROPERTY_CLASS"
+
     elif command == "/bestdeal":
         sort = "DISTANCE"
     return sort
@@ -32,7 +36,7 @@ async def constructor_info(
     return hotel_data
 
 
-async def request_low_high(data, sort):
+async def request_low_high(data: dict, sort: str):
     return await post_hotels_request(
         city_id=data.get("city"),
         sort=sort,
@@ -69,3 +73,18 @@ async def distributor_low_high(data: dict):
 
     await asyncio.gather(*tasks)
     return total_list
+
+
+async def main():
+    session = await get_async_session()
+    request_data = {
+        "user_chat_id": 416484,
+        "command": "/bestdeal",
+    }
+    request = Request(**request_data)
+    session.add(request)
+    await session.commit()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

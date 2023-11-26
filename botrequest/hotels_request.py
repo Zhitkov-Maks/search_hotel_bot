@@ -1,12 +1,13 @@
-import asyncio
 import json
 from typing import Any
 
 import jmespath
+from loguru import logger
 
 from botrequest.api_request import api_request
 
 
+@logger.catch
 async def parse_price(parsed_price: list) -> list:
     """Очищаем цену от лишних символов."""
     return [
@@ -15,6 +16,7 @@ async def parse_price(parsed_price: list) -> list:
     ]
 
 
+@logger.catch
 async def generate_result(
         parsed_hotel_id: list,
         parsed_name: list,
@@ -40,6 +42,7 @@ async def generate_result(
     raise PermissionError
 
 
+@logger.catch
 async def sorted_distance(
         parsed_distance: list,
         distance: int,
@@ -48,18 +51,14 @@ async def sorted_distance(
         parsed_price_rep: list,
 ) -> dict:
     """Функция для сортировки результата по дистанции."""
-    parsed_distance_ftd = list(
-        filter(lambda x: x <= distance, parsed_distance)
-    )
+    parsed_distance_ftd = list(filter(lambda x: x <= distance, parsed_distance))
 
     return await generate_result(
-        parsed_hotel_id,
-        parsed_name,
-        parsed_price_rep,
-        parsed_distance_ftd
+        parsed_hotel_id, parsed_name, parsed_price_rep, parsed_distance_ftd
     )
 
 
+@logger.catch
 async def parse_data(response: Any, distance: int, sort: str):
     """Функция для получения необходимых данных из запроса."""
     parsed_name: list = jmespath.search(
@@ -78,31 +77,23 @@ async def parse_data(response: Any, distance: int, sort: str):
     )
     parsed_price_rep = await parse_price(parsed_price)
 
-    length_match = jmespath.search(
-        "data.propertySearch.properties", response
-    )
+    length_match = jmespath.search("data.propertySearch.properties", response)
 
     if sort == "DISTANCE":
         return await sorted_distance(
-            parsed_distance,
-            distance,
-            parsed_hotel_id,
-            parsed_name,
-            parsed_price_rep
+            parsed_distance, distance, parsed_hotel_id, parsed_name, parsed_price_rep
         )
 
     else:
         if len(length_match) > 0:
             return await generate_result(
-                parsed_hotel_id,
-                parsed_name,
-                parsed_price_rep,
-                parsed_distance
+                parsed_hotel_id, parsed_name, parsed_price_rep, parsed_distance
             )
 
         raise PermissionError
 
 
+@logger.catch
 async def request_hotels(payload: dict, distance: int, sort: str) -> dict | bool:
     try:
         response = await api_request("properties/v2/list", payload, "POST")
@@ -119,6 +110,7 @@ async def request_hotels(payload: dict, distance: int, sort: str) -> dict | bool
         return False
 
 
+@logger.catch
 async def post_hotels_request(
         city_id: str,
         sort: str,
@@ -153,18 +145,3 @@ async def post_hotels_request(
         "filters": {"price": {"max": price_max, "min": price_min}},
     }
     return await request_hotels(payload, distance, sort)
-
-
-if __name__ == "__main__":
-    resp = asyncio.run(
-        post_hotels_request(
-            city_id="2114",
-            sort="PRICE_LOW_TO_HIGH",
-            date=("30-12-2023", "01-05-2024"),
-            price_min=30,
-            price_max=500,
-            distance=10,
-            hotels_amt=5,
-        )
-    )
-    print(resp)

@@ -1,17 +1,16 @@
-import asyncio
 import json
 from typing import Any
 
 import jmespath
+from loguru import logger
 
 from botrequest.api_request import api_request
 
 
+@logger.catch
 async def parse_request_with_photo(response: Any, photo_amt: int):
     details: list = []
-    parsed_name = jmespath.search(
-        "data.propertyInfo.summary.name", response
-    )
+    parsed_name = jmespath.search("data.propertyInfo.summary.name", response)
     for i_photo in range(photo_amt):
         parsed_photo = jmespath.search(
             f"data.propertyInfo.propertyGallery.images[{i_photo}].image.url",
@@ -26,6 +25,7 @@ async def parse_request_with_photo(response: Any, photo_amt: int):
     return details
 
 
+@logger.catch
 async def request_detail(payload: dict, photo_amt: int) -> list | None | bool:
     try:
         response: Any = await api_request("properties/v2/detail", payload, "POST")
@@ -48,6 +48,7 @@ async def request_detail(payload: dict, photo_amt: int) -> list | None | bool:
         return False
 
 
+@logger.catch
 async def post_detail_request(hotel: str, photo_amt: int = None) -> Any:
     """
     Функция, обрабатывающая запросы фотографий отеля.
@@ -60,13 +61,3 @@ async def post_detail_request(hotel: str, photo_amt: int = None) -> Any:
         "propertyId": hotel,
     }
     return await request_detail(payload, photo_amt)
-
-
-if __name__ == "__main__":
-    resp = asyncio.run(
-        post_detail_request(
-            hotel="74633678",
-            photo_amt=None
-        )
-    )
-    print(resp)

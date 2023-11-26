@@ -1,10 +1,11 @@
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import CommandStart, Command
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
 
-from config import BOT_TOKEN, text
+from config import BOT_TOKEN, menu
 from handlers.bestseal_handler import best_router
 from handlers.history_handler import history_router
 from handlers.low_high_handler import lh_router
@@ -26,19 +27,10 @@ async def handler_start(message: types.Message):
     )
 
 
-@dp.message(Command("help", prefix="!/"))
-async def handle_help(message: types.Message):
-    await message.answer(
-        text=text
-    )
-
-
-@dp.message()
-async def handler_start(message: types.Message):
-    await message.answer(
-        text=f"""Hi {message.chat.full_name} 😎😎😎! 
-Я вас не понимаю. Попробуйте еще раз."""
-    )
+@dp.message(F.text == "/help")
+async def handle_help(message: types.Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Меню", reply_markup=menu)
 
 
 async def main():

@@ -29,6 +29,7 @@ class Hotel(Base):
     request_id: Mapped[int] = mapped_column(ForeignKey("requests.id"), index=True)
     request: Mapped["Request"] = relationship(back_populates="hotels")
     distance: Mapped[float] = mapped_column(Float, default=0)
+    total_price: Mapped[int] = mapped_column(Integer, nullable=True)
     images: Mapped[List["Image"]] = relationship(
         "Image", back_populates="hotel", lazy="joined", cascade="all, delete"
     )
@@ -40,4 +41,6 @@ class Image(Base):
     image_url: Mapped[str] = mapped_column(String(length=200))
     hotel_id: Mapped[int] = mapped_column(ForeignKey("hotels.id"), index=True)
     hotel: Mapped["Hotel"] = relationship(back_populates="images")
-    caption: Mapped[str] = mapped_column(String(100), default="Без подписи", nullable=True)
+    caption: Mapped[str] = mapped_column(
+        String(100), default="Без подписи", nullable=True
+    )
