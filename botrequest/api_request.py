@@ -2,6 +2,8 @@ from typing import Any, Dict, Union, List
 
 import aiohttp
 
+from config import RAPIDAPI_KEY
+
 
 async def api_request(
         method_endswith: str,
@@ -13,7 +15,7 @@ async def api_request(
     url = f"https://hotels4.p.rapidapi.com/{method_endswith}"
 
     headers = {
-        "X-RapidAPI-Key": "fa965ff941msh1edbef8472cf537p13a43cjsnf98973042eff",
+        "X-RapidAPI-Key": RAPIDAPI_KEY,
         "X-RapidAPI-Host": "hotels4.p.rapidapi.com",
     }
 

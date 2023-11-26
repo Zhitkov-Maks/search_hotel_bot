@@ -7,17 +7,8 @@ import jmespath
 from botrequest.api_request import api_request
 
 
-async def post_address_request(hotel: str) -> Any:
-    """Функция, обрабатывающая запрос адреса отеля"""
-
-    payload = {
-        "currency": "USD",
-        "eapid": 1,
-        "locale": "ru_RU",
-        "siteId": 300000001,
-        "propertyId": hotel,
-    }
-
+async def request_address(payload: dict) -> str | bool:
+    """Функция для получения адреса отеля."""
     try:
         response = await api_request("properties/v2/detail", payload, "POST")
 
@@ -37,6 +28,20 @@ async def post_address_request(hotel: str) -> Any:
 
     except PermissionError:
         return False
+
+
+async def post_address_request(hotel: str) -> Any:
+    """Функция, обрабатывающая запрос адреса отеля"""
+
+    payload = {
+        "currency": "USD",
+        "eapid": 1,
+        "locale": "ru_RU",
+        "siteId": 300000001,
+        "propertyId": hotel,
+    }
+
+    return await request_address(payload)
 
 
 if __name__ == "__main__":
