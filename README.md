@@ -23,6 +23,8 @@ Telegram bot for searching hotels around the world
 
 3. Выполнить миграции, для создания базы.
 
+   В папке alembic/versions удалить все файлы. Затем выполнить команды:
+
    `alembic revision --autogenerate -m "create_table"`
 
    `alembic upgrade head`
