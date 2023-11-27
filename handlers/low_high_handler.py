@@ -38,7 +38,6 @@ async def enter_date_in(message: types.Message, state: FSMContext):
     """Сохранение и поиск города, если найден, то сохраняем id города."""
     await message.answer("Ждите идет поиск города....")
     search_city = await get_city_request(message.text)
-    # search_city = (1, 2)
     if search_city:
         await state.update_data(city=search_city[1])
         await state.set_state(HotelInfoState.date_in)

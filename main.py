@@ -9,12 +9,14 @@ from config import BOT_TOKEN, menu
 from handlers.bestseal_handler import best_router
 from handlers.history_handler import history_router
 from handlers.low_high_handler import lh_router
+from handlers.valute_handler import valute_router
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 dp.include_router(lh_router)
 dp.include_router(best_router)
 dp.include_router(history_router)
+dp.include_router(valute_router)
 
 
 @dp.message(CommandStart())

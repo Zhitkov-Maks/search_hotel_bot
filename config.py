@@ -3,6 +3,7 @@ from decouple import config
 
 BOT_TOKEN = config("TOKEN")
 RAPIDAPI_KEY = config("RAPIDAPI_KEY")
+KEY = config("KEY")
 
 text = """Список доступных команд:
 /start - Приветствие.
@@ -26,6 +27,7 @@ menu_bot = [
         InlineKeyboardButton(text="По вашим данным", callback_data="/bestdeal"),
         InlineKeyboardButton(text="История ваших запросов", callback_data="history"),
     ],
+    [InlineKeyboardButton(text="Узнать курсы валют.", callback_data="get_valute")]
 ]
 
 menu = InlineKeyboardMarkup(inline_keyboard=menu_bot)
